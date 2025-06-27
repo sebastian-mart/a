@@ -1,71 +1,100 @@
-from  tkinter import *
-from tkinter import ttk
-import json
+class Handler:
+    def __init__(self):
+        self.next = None
+
+    def set_next(self, next):
+        self.next=next
+
+    def handle(self, type, message):
+        pass
 
 
-class a:
-    def __init__(self,m):
-        self.a=Label(m, text='Company').grid(row=0)
-        self.b=Label(m, text='Departament').grid(row=1)
-        self.c=Label(m, text='Name').grid(row=2)
-        self.d=Label(m, text='Function').grid(row=3)
-        self.e=Label(m, text='Salary').grid(row=4)
-        self.f=Label(m, text='Birth date').grid(row=5)
-        self.e1 = Entry(m)
-        self.e2 = Entry(m)
-        self.e3 = Entry(m)
-        self.e4 = Entry(m)
-        self.e5 = Entry(m)
-        self.combo_box = ttk.Combobox(m,
-                                 values=["Ianuarie", "Februarie", "Martie", "Aprlie", "Mai", "Iunie", "Iulie", "August",
-                                         "Septembrie", "Octombrie", "Noiembrie", "Decembrie"])
-        self.combo_box.set("Month")
-        self.combo_box.grid(row=5, column=1)
-        self.combo_box.bind("<<ComboboxSelected>>", self.select)
-        self.e1.grid(row=0, column=1)
-        self.e2.grid(row=1, column=1)
-        self.e3.grid(row=2, column=1)
-        self.e4.grid(row=3, column=1)
-        self.e5.grid(row=4, column=1)
+class Paznic(Handler):
+    def __init__(self):
+        super().__init__()
 
-        self.menu = Menu(m)
-        m.config(menu=self.menu)
-        self.filemenu = Menu(self.menu)
-        self.menu.add_cascade(label='File', menu=self.filemenu)
-        self.filemenu.add_command(label='Save', command=self.save)
-        self.filemenu.add_separator()
-        self.filemenu.add_command(label='Exit', command=m.quit)
+    def handle(self, type, message):
+        if type == 5:
+            print("Paznic:" + message)
+        else:
+            if self.next:
+                self.next.handle(type,message)
 
 
-    def select(self,event):
-        selected_item = self.combo_box.get()
+class Politie(Handler):
+    def __init__(self):
+        super().__init__()
+
+    def handle(self, type, message):
+        if type == 4:
+            print("Politie:" + message)
+        else:
+            if self.next:
+                self.next.handle(type,message)
 
 
-    def save(self):
-        a = self.e1.get()
-        b = self.e2.get()
-        c = self.e3.get()
-        d = self.e4.get()
-        e = self.e5.get()
-        f = self.combo_box.get()
-        data={
-            "company":a,
-            "department":b,
-            "name":c,
-            "function":d,
-            "salary":e,
-            "birth":f
-        }
-        f=open("data.json",'w')
-        json.dump(data,f,indent=4)
+class Sri(Handler):
+    def __init__(self):
+        super().__init__()
+
+    def handle(self, type, message):
+        if type == 3:
+            print("Sri:" + message)
+        else:
+            if self.next:
+                self.next.handle(type,message)
 
 
+class Sie(Handler):
+    def __init__(self):
+        super().__init__()
 
+    def handle(self, type, message):
+        if type == 2:
+            print("Sie:" + message)
+        else:
+            if self.next:
+                self.next.handle(type,message)
+
+
+class Csat(Handler):
+    def __init__(self):
+        super().__init__()
+
+    def handle(self, type, message):
+        if type == 1:
+            print("Csat a preluat mesajul" + message)
+        else:
+            if self.next:
+                self.next.handle(type,message)
+
+
+class Nato(Handler):
+    def __init__(self):
+        super().__init__()
+
+    def handle(self, type, message):
+        if type == 0:
+            print("Nato a preluat mesajul" + message)
+        else:
+            print("Tip gresit")
+
+
+def main():
+    nato = Nato()
+    csat = Csat()
+    sie = Sie()
+    sri = Sri()
+    politie = Politie()
+    paznic = Paznic()
+    paznic.set_next(politie)
+    politie.set_next(sri)
+    sri.set_next(sie)
+    sie.set_next(csat)
+    csat.set_next(nato)
+    paznic.handle(0, "Message1")
+    politie.handle(5,"da")
 
 
 if __name__ == '__main__':
-    m=Tk()
-    a(m)
-    m.mainloop()
-
-
+    main()
